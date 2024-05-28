@@ -1,7 +1,9 @@
 package com.aluracursos.literalura.main;
 
+import com.aluracursos.literalura.models.Author;
 import com.aluracursos.literalura.models.DatosLibro;
 import com.aluracursos.literalura.models.Libro;
+import com.aluracursos.literalura.repository.AuthorRepository;
 import com.aluracursos.literalura.repository.LibroRepository;
 import com.aluracursos.literalura.services.ConvierteDatos;
 import com.aluracursos.literalura.services.RequestAPI;
@@ -15,10 +17,13 @@ public class Main {
     private String urlBase ="https://gutendex.com/books/";
     private ConvierteDatos convierteDatos = new ConvierteDatos();
     private LibroRepository libroRepository;
+    private AuthorRepository authorRepository;
     private List<Libro> libros;
+    private List<Author> autores;
 
-    public Main(LibroRepository libroRepository) {
+    public Main(LibroRepository libroRepository, AuthorRepository authorRepository) {
         this.libroRepository = libroRepository;
+        this.authorRepository = authorRepository;
     }
 
     // Mostrar el menu en consola
@@ -35,8 +40,8 @@ public class Main {
                     
                     1 - Buscar un libro
                     2 - Consultar libros buscados
-                    1 - Buscar un libro
-                    2 - Consultar libros buscados
+                    3 - Consultar autores
+                    2 - Consultar autores de un año especifico
                     0 - Salir               
                     """;
 
@@ -56,6 +61,9 @@ public class Main {
                 case 2:
                     consultarLibros();
                     break;
+                case 3:
+                    consultarAutores();
+                    break;
                 case 0:
                     System.out.println("Hasta luego");
                     break;
@@ -64,7 +72,6 @@ public class Main {
             }
         }
     }
-
 
     // Extrae los datos de un libro
     private DatosLibro getDatosLibro() {
@@ -78,28 +85,34 @@ public class Main {
         return datosLibro;
     }
 
-    // Busca un libro y lo guarda en la BD
+    // Busca un libro y guarda infromacion en la BD en sus tablas correspondientes
     private void buscarLibro()
     {
         DatosLibro datosLibro = getDatosLibro();
 
         try {
             Libro libro = new Libro(datosLibro.resultados().get(0));
+            Author author = new Author(datosLibro.resultados().get(0).autorList().get(0));
+
             System.out.println("""
-                    Libro[
-                        Titulo: %s
-                        Author: %s
-                        Lenguaje: %s
-                        Descargas: %s
-                    ] 
+                    libro[
+                        titulo: %s
+                        author: %s
+                        lenguaje: %s
+                        descargas: %s
+                    ]
                     """.formatted(libro.getTitulo(),
                     libro.getAutor(),
                     libro.getLenguaje(),
                     libro.getDescargas().toString()));
+
             libroRepository.save(libro);
+            authorRepository.save(author);
+
         }catch (Exception e){
-            System.out.println("No se encontro ese libro");
+            System.out.println("no se encontro ese libro");
         }
+
     }
 
     // Trae los libros guardados en la BD
@@ -115,6 +128,20 @@ public class Main {
                     l.getAutor(),
                     l.getLenguaje(),
                     l.getDescargas().toString()));
+        });
+    }
+
+    // Trae todos los autores de los libros consultados en la BD
+    private void consultarAutores() {
+        autores = authorRepository.findAll();
+        autores.stream().forEach(a -> {
+            System.out.println("""
+                        Autor: %s
+                        Año de nacimiento: %s
+                        Año de defuncion: %s
+                    """.formatted(a.getAutor(),
+                    a.getNacimiento().toString(),
+                    a.getDefuncion().toString()));
         });
     }
 }

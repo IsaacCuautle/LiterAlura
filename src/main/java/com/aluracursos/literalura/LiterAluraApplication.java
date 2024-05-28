@@ -1,6 +1,7 @@
 package com.aluracursos.literalura;
 
 import com.aluracursos.literalura.main.Main;
+import com.aluracursos.literalura.repository.AuthorRepository;
 import com.aluracursos.literalura.repository.LibroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -18,8 +19,10 @@ public class LiterAluraApplication implements CommandLineRunner
 
 	@Autowired
 	private LibroRepository repository;
+	@Autowired
+	private AuthorRepository authorRepository;
 	public void run(String[] args) {
-		Main principal = new Main(repository);
+		Main principal = new Main(repository,authorRepository);
 		principal.showMenu();
 	}
 }
