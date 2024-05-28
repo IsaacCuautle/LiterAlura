@@ -10,15 +10,15 @@ public class Author {
     private Long id;
 
     private String autor;
-    private String nacimiento;
-    private String defuncion;
+    private Integer nacimiento;
+    private Integer defuncion;
 
     public Author(){}
 
     public Author(DatosAutor datosAutors) {
         this.autor = datosAutors.nombreAutor();
-        this.nacimiento = datosAutors.nacimiento().toString();
-        this.defuncion = datosAutors.defuncion().toString();
+        this.nacimiento = datosAutors.nacimiento();
+        this.defuncion = datosAutors.defuncion();
     }
 
 
@@ -38,19 +38,19 @@ public class Author {
         this.autor = autor;
     }
 
-    public String getNacimiento() {
+    public Integer getNacimiento() {
         return nacimiento;
     }
 
-    public void setNacimiento(String nacimiento) {
+    public void setNacimiento(Integer nacimiento) {
         this.nacimiento = nacimiento;
     }
 
-    public String getDefuncion() {
+    public Integer getDefuncion() {
         return defuncion;
     }
 
-    public void setDefuncion(String defuncion) {
+    public void setDefuncion(Integer defuncion) {
         this.defuncion = defuncion;
     }
 }

@@ -41,7 +41,7 @@ public class Main {
                     1 - Buscar un libro
                     2 - Consultar libros buscados
                     3 - Consultar autores
-                    2 - Consultar autores de un año especifico
+                    4 - Consultar autores de un año especifico
                     0 - Salir               
                     """;
 
@@ -63,6 +63,9 @@ public class Main {
                     break;
                 case 3:
                     consultarAutores();
+                    break;
+                case 4:
+                    consultarAutoresPorAno();
                     break;
                 case 0:
                     System.out.println("Hasta luego");
@@ -142,6 +145,22 @@ public class Main {
                     """.formatted(a.getAutor(),
                     a.getNacimiento().toString(),
                     a.getDefuncion().toString()));
+        });
+    }
+
+    public void consultarAutoresPorAno()
+    {
+        System.out.println("Ingresa el año a partir del cual buscar:");
+        var anoBusqueda = scanner.nextInt();
+        scanner.nextLine();
+
+        List<Author> authors = authorRepository.autorPorFecha(anoBusqueda);
+        authors.forEach( a -> {
+            System.out.println("""
+                    Nombre: %s
+                    Fecha de nacimiento: %s
+                    Fecha de defuncion: %s
+                    """.formatted(a.getAutor(),a.getNacimiento().toString(),a.getDefuncion().toString()));
         });
     }
 }
